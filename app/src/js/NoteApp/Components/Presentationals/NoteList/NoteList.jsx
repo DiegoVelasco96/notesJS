@@ -8,24 +8,24 @@ import Note from './Note';
 
 const NoteList = ({ notes }) => {
 	return (
-		<Grid className = "scssWhite">
+		<Grid className="scssWhite">
 			<div className="boxListNote">
 				<Row around="lg">
-				{
-					notes.map((colNote, id) => (
-						<Col lg={5} key = {id}>
-						{
-							colNote.map( note => (
-								<Note	key={note.id}
-										id={note.id}
-										noteTitle= {note.noteTitle}
-										noteText = {note.noteText}
-								/>
-							))
-						}
-						</Col>
-					))
-				}
+					{
+						notes.map((colNote, id) => (
+							<Col lg={5} key={id}>
+								{
+									colNote.map(note => (
+										<Note key={note.id}
+											id={note.id}
+											noteTitle={note.noteTitle}
+											noteText={note.noteText}
+										/>
+									))
+								}
+							</Col>
+						))
+					}
 				</Row>
 			</div>
 		</Grid>
@@ -33,7 +33,7 @@ const NoteList = ({ notes }) => {
 };
 
 NoteList.propTypes = {
-    notes:PropTypes.array,
+	notes: PropTypes.array,
 };
 
 export default NoteList;

@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import  { Route } from 'react-router-dom';
+import { SubmissionError } from 'redux-form';
+import { Route } from 'react-router-dom';
 // Presentationals
 import AppFrame from '../Presentationals/AppFrame';
 // import NoteEdit from '../Presentationals/NoteEdit';
@@ -13,6 +14,8 @@ import NoteData from '../Presentationals/NoteData';
 import Nav from '../Presentationals/Common/Nav';
 // Actions
 import { fetchNotes } from '../../../redux/actions/fetchNotes';
+import { updateNote } from '../../../redux/actions/updateNote';
+import { deleteNote } from '../../../redux/actions/deleteNote';
 // Selector
 import { getCustomerByIdNote } from '../../../redux/selectors/notes';
 
@@ -20,37 +23,57 @@ class CustomerNoteContainer extends Component {
     componentDidMount() {
         this.props.fetchNotes();
     }
-    renderBody = (note) => {
-        if(note.id !== undefined ) {
-            return(
-                <Route
-                    path="/note/:id/edit"
-                    children={
 
-                        ({ match }) => {
-                            const NoteControl =  match? NoteForm :NoteData;
-                            return <NoteControl {...note}/>;
-                        }
-                    }
-                />
-            );
-        }
+    handleSubmit = values => {
+        const { id } = values;
+        return this.props.updateNote(id, values).then(r => {
+            if (r.error) {
+                throw new SubmissionError(r.payload);
+            }
+        });
     };
 
-    renderNav= (note) => {
-        if(note !== undefined ) {
-            return(
-                <Nav  {...note}/>
+    handleDelete = id => {
+        this.props.deleteNote(id).then(v => {
+            this.props.history.goBack();
+        });
+    }
+
+    renderNoteControl = match => {
+        if (this.props.note) {
+            const NoteControl = match ? NoteForm : NoteData;
+            return <NoteControl onSubmit={this.handleSubmit} onDelete={this.handleDelete} {...this.props.note} />;
+        }
+        return null;
+    }
+
+    renderBody = () => {
+        return (
+            <Route
+                path="/note/:id/edit"
+                children={
+                    ({ match }) => (
+                        this.renderNoteControl(match)
+                    )
+                }
+            />
+        );
+    };
+
+    renderNav = () => {
+        const { note } = this.props;
+        if (note !== undefined) {
+            return (
+                <Nav {...note} />
             );
         }
     };
 
     render() {
-        const { note } = this.props;
         return (
             <AppFrame
-                body= {this.renderBody(note)}
-                nav= {this.renderNav(note)}
+                body={this.renderBody()}
+                nav={this.renderNav()}
             />
         );
     }
@@ -64,17 +87,16 @@ CustomerNoteContainer.propTypes = {
 CustomerNoteContainer.defaultProps = {
     note: {},
 };
-const mapDispatchToProps = { fetchNotes };
-
-const mapStateToProps = (state, props) => {
-    if(state.notes.length>0) {
-        return(
-            {
-                note: getCustomerByIdNote(state, props),
-            }
-        );
-    }
+const mapDispatchToProps = {
+    fetchNotes,
+    updateNote,
+    deleteNote,
 };
+
+const mapStateToProps = (state, props) => ({
+    note: getCustomerByIdNote(state, props),
+});
+
 const EditNoteConect = connect(mapStateToProps, mapDispatchToProps)(CustomerNoteContainer);
 
 export default withRouter(EditNoteConect);

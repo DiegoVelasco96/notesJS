@@ -8,8 +8,7 @@ import Buttons from './Partials/Buttons';
 const Note = ({ noteText, noteTitle, id }) => {
     return (
         <div className="ContentNote">
-
-            <div className = "Butons">
+            <div className = "Buttons">
                 <Buttons id={id}/>
             </div>
             <div className="noteContentText">

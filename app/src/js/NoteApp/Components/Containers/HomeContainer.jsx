@@ -1,6 +1,5 @@
 // Depedencies
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 // presentational componentes
 import AppFrame from '../Presentationals/AppFrame';
@@ -32,9 +31,5 @@ class HomeContainer extends Component {
         );
     }
 }
-
-HomeContainer.propTypes = {
-
-};
 
 export default withRouter(HomeContainer);

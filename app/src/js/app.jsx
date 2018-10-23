@@ -7,24 +7,17 @@ import NoteListContainer from './NoteApp/Components/Containers/NoteListContainer
 import CustomerNoteContainer from './NoteApp/Components/Containers/CustomerNoteContainer';
 
 class App extends Component {
-  rederHome = () => <HomeContainer/>
-  rederNoteList = () => <NoteListContainer/>
-  renderNotesContainer= (props) => ( <CustomerNoteContainer id={props.match.params.id}/>)
-  rederError = () => <h1>Error404</h1>
-
-  render() {
-
-    return (
-        <Router>
-            <Switch>
-                <Route exact path = "/home" component = {this.rederHome}/>
-                <Route exact path = "/" component = {this.rederNoteList}/>
-                <Route path = "/note/:id" render = {(props) => this.renderNotesContainer(props)}/>
-                <Route component = {this.rederError}/>
-            </Switch>
-        </Router>
-    );
-  }
+    render() {
+        return (
+            <Router>
+                <Switch>
+                    <Route exact path="/" component={NoteListContainer} />
+                    <Route exact path="/home" component={HomeContainer} />
+                    <Route path="/note/:id" render={props => <CustomerNoteContainer id={props.match.params.id} />} />
+                </Switch>
+            </Router>
+        );
+    }
 }
 
 export default App;

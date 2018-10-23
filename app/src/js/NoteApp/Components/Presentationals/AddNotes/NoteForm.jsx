@@ -1,73 +1,69 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { reduxForm, Field } from 'redux-form';
-import { connect } from 'react-redux';
-import TextField from 'material-ui/TextField';
+import { TextField } from 'material-ui';
 import { required, maxLength15, validate } from '../../../../tools/validateForm.jsx';
+import { setPropsAsInitial } from '../../../../redux/helpers/setPropsAsInitial';
 
-const renderTextField = ({
-  input,
-  label,
-  meta: { touched, error },
-  ...custom
-}) => (
-    <TextField
-      hintText={label}
-      floatingLabelText={label}
-      errorText={touched && error}
-      {...input}
-      {...custom}
-    />
-  );
+class NoteForm extends Component {
+  renderTextField = ({
+    input,
+    label,
+    meta: { touched, error },
+  }) => (
+      <TextField
+        hintText={label}
+        floatingLabelText={label}
+        errorText={touched && error}
+        {...input}
+      />
+    );
 
-// form>(div>label+Field[name component type])*2
-const NoteEdit = (props) => {
-  const { handleSubmit, pristine, reset, submitting } = props;
-  return (
-    <div style={{ background: 'white' }}>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <Field
-            name="noteTitle"
-            component={renderTextField}
-            label="Title Note"
-            validate={[maxLength15, required]}
-          />
-        </div>
-        <div>
-          <Field
-            name="noteText"
-            component={renderTextField}
-            label="Notes"
-            multiLine={true}
-            rows={2}
-          />
-        </div>
-        <div>
-          <button type="submit" disabled={pristine || submitting}>
-            Submit
-          </button>
-          <button type="button" disabled={pristine || submitting} onClick={reset}>
-            Clear Values
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
+  render() {
+    const { handleSubmit, pristine, reset, submitting } = this.props;
+    return (
+      <div style={{ background: 'white' }}>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <Field
+              name="noteTitle"
+              component={this.renderTextField}
+              label="Title Note"
+              validate={[maxLength15, required]}
+            />
+          </div>
+          <div>
+            <Field
+              name="noteText"
+              component={this.renderTextField}
+              label="Notes"
+              multiLine={true}
+              rows={2}
+            />
+          </div>
+          <hr />
+          <div>
+            <button type="submit" disabled={pristine || submitting}>
+              Submit
+            </button>
+            <button type="button" disabled={pristine || submitting} onClick={reset}>
+              Clear Values
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+}
 
-NoteEdit.propTypes = {
+NoteForm.propTypes = {
   noteTitle: PropTypes.string,
   noteText: PropTypes.string,
-  id: PropTypes.string,
 };
-const mapStateToProps = (state, props) => {
-  return (
-    {
-      initialValues: props,
-    }
-  );
-};
-const NoteEditForm = reduxForm({ form: 'NoteEdit', validate })(NoteEdit);
-const NoteEditConnect = connect(mapStateToProps, null)(NoteEditForm);
-export default NoteEditConnect;
+
+const NoteEditForm = reduxForm({
+  form: 'NoteForm',
+  validate,
+})(NoteForm);
+
+export default setPropsAsInitial(NoteEditForm);

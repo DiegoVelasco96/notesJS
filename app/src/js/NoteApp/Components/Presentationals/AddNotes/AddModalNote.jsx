@@ -20,7 +20,6 @@ class AddModalNote extends Component {
     }
 
     handleSubmit = values => {
-        debugger;
         const totaNotes = this.props.notes.length;
         const valuesAux = { ...values, id: 'n' + (totaNotes + 1) };
         return this.props.insertNotes(valuesAux).then(r => {
